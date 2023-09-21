@@ -10,40 +10,37 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
 
 class DirectionServiceTest {
+    @Mock
+    private PharmacySearchService pharmacySearchService;
 
+    private DirectionService directionService;
 
-    private PharmacySearchService pharmacySearchService = mock(PharmacySearchService.class);
-    private DirectionService directionService = new DirectionService(pharmacySearchService);
-    private  List<PharmacyDto> pharmactDtoList;
-    public DirectionServiceTest(@Autowired PharmacySearchService pharmacySearchService,@Autowired DirectionService directionService) {
-        this.pharmacySearchService = pharmacySearchService;
-        this.directionService = directionService;
-    }
-//    private static MockedStatic<PharmacySearchService> aMainActivity;
-//
-//    @BeforeClass
-//    public static void setBeforeClass() {
-//        aMainActivity = mockStatic(PharmacySearchService.class);
-//    }
+    private List<PharmacyDto> pharmacyList;
 
     @BeforeEach
     void setUp() {
-        pharmactDtoList = new ArrayList<>();
+        MockitoAnnotations.initMocks(this);
+        directionService = new DirectionService(
+                pharmacySearchService);
 
+        pharmacyList = new ArrayList<>();
         // Adding PharmacyDto objects to the list using add method
-        pharmactDtoList.add(PharmacyDto.builder()
+        pharmacyList.add(PharmacyDto.builder()
                 .id(1L)
                 .pharmacyName("돌곶이온누리약국")
                 .pharmacyAddress("주소1")
@@ -51,7 +48,7 @@ class DirectionServiceTest {
                 .longitude(127.0569046)
                 .build());
 
-        pharmactDtoList.add(PharmacyDto.builder()
+        pharmacyList.add(PharmacyDto.builder()
                 .id(2L)
                 .pharmacyName("호수온누리약국")
                 .pharmacyAddress("주소2")
@@ -59,7 +56,6 @@ class DirectionServiceTest {
                 .longitude(127.029052)
                 .build());
     }
-
 
     @Test
     void 결과값이_거리_순으로_정렬() {
@@ -72,7 +68,7 @@ class DirectionServiceTest {
                 .latitude(inputLatitude)
                 .longitude(inputLongitude)
                 .build();
-        when(pharmacySearchService.searchPharmacyDtoList()).thenReturn(pharmactDtoList);
+        when(pharmacySearchService.searchPharmacyDtoList()).thenReturn(pharmacyList);
 
         List<Direction> result = directionService.buildDirectionList(documentDto);
 
@@ -83,16 +79,34 @@ class DirectionServiceTest {
     }
 
     @Test
-    void 정해진_반경_10km_이내_검색(){
-        double latitude1 = 37.5505;
-        double longitude1 = 127.0817;
+    void 정해진_반경_10km_이내_검색() {
+        pharmacyList.add(PharmacyDto.builder()
+                .id(3L)
+                .pharmacyName("경기약국")
+                .pharmacyAddress("주소3")
+                .latitude(37.3825107393401)
+                .longitude(127.236707811313)
+                .build());
 
-        double latitude2 = 37.541;
-        double longitude2 = 127.0766;
-        String result = "1.1";
+        String addressName = "서울 성북구 종암로10길";
+        double inputLatitude = 37.5960650456809;
+        double inputLongitude = 127.037033003036;
+
+        DocumentDto documentDto = DocumentDto.builder()
+                .addressName(addressName)
+                .latitude(inputLatitude)
+                .longitude(inputLongitude)
+                .build();
+
+        // When
+        when(pharmacySearchService.searchPharmacyDtoList()).thenReturn(pharmacyList);
+
+        List<Direction> results = directionService.buildDirectionList(documentDto);
+
+        // Then
+        assertEquals(2, results.size());
+        assertEquals("호수온누리약국", results.get(0).getTargetPharmacyName());
+        assertEquals("돌곶이온누리약국", results.get(1).getTargetPharmacyName());
     }
-//    @AfterClass
-//    public static void setAfterClass() {
-//        aMainActivity.close();
-//    }
+
 }
