@@ -36,6 +36,9 @@ dependencies {
 
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:mariadb'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-inline:5.2.0'
+
 //    // spock
 //    testImplementation('org.spockframework:spock-core:2.1-groovy-3.0')
 //    testImplementation('org.spockframework:spock-spring:2.1-groovy-3.0')

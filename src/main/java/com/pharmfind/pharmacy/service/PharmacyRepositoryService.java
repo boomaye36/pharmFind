@@ -11,7 +11,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PharmacrRepositoryService {
+public class PharmacyRepositoryService {
     private final PharmacyRepository pharmacyRepository;
     public void updateAddressWithoutTransaction(Long id, String address){
         Pharmacy pharmacy = pharmacyRepository.findById(id).orElse(null);
