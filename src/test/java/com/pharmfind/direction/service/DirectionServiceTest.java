@@ -2,6 +2,7 @@ package com.pharmfind.direction.service;
 
 import com.pharmfind.api.dto.DocumentDto;
 import com.pharmfind.direction.entity.Direction;
+import com.pharmfind.direction.repository.DirectionRepository;
 import com.pharmfind.pharmacy.dto.PharmacyDto;
 import com.pharmfind.pharmacy.service.PharmacySearchService;
 import org.junit.AfterClass;
@@ -29,6 +30,7 @@ class DirectionServiceTest {
     private PharmacySearchService pharmacySearchService;
 
     private DirectionService directionService;
+    private DirectionRepository directionRepository;
 
     private List<PharmacyDto> pharmacyList;
 
@@ -36,6 +38,7 @@ class DirectionServiceTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
         directionService = new DirectionService(
+                directionRepository,
                 pharmacySearchService);
 
         pharmacyList = new ArrayList<>();
