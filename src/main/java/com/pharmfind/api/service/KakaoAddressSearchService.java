@@ -25,12 +25,14 @@ public class KakaoAddressSearchService {
     public KakaoApiResponseDto requestAddressSearch(String address){
         if (ObjectUtils.isEmpty(address)) return null;
         URI uri = kakaoUriBuilderService.buildUriByAddressSearch(address);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HttpHeaders.AUTHORIZATION, "kakaoAK " + kakaoRestApiKey);
-        HttpEntity httpEntity = new HttpEntity<>(httpHeaders);
+        HttpHeaders headers = new HttpHeaders(); // httpHeaders라고 했더니 오류남
+        headers.set(HttpHeaders.AUTHORIZATION, "KakaoAK " + kakaoRestApiKey);
+        HttpEntity httpEntity = new HttpEntity<>(headers);
+        log.info("카카오 api =" + restTemplate.exchange(uri, HttpMethod.GET, httpEntity, KakaoApiResponseDto.class).getBody());
         //kakao api 호출
         return restTemplate.exchange(uri, HttpMethod.GET, httpEntity, KakaoApiResponseDto.class).getBody();
 
 
     }
+
 }

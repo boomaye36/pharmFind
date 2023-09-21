@@ -16,7 +16,7 @@ public class KakaoUriBuilderService {
         uriComponentsBuilder.queryParam("query", address);
 
         URI uri = uriComponentsBuilder.build().encode().toUri();
-        log.info("맹글어진 카카오 uri : " , uri);
+        log.info("맹글어진 카카오 uri :  " + uri , uri);
         return uri;
     }
 
