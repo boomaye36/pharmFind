@@ -1,6 +1,7 @@
 package com.pharmfind.direction.service;
 
 import com.pharmfind.api.dto.DocumentDto;
+import com.pharmfind.api.service.KakaoCategorySearchService;
 import com.pharmfind.direction.entity.Direction;
 import com.pharmfind.direction.repository.DirectionRepository;
 import com.pharmfind.pharmacy.dto.PharmacyDto;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.*;
 class DirectionServiceTest {
     @Mock
     private PharmacySearchService pharmacySearchService;
+    private KakaoCategorySearchService kakaoCategorySearchService;
 
     private DirectionService directionService;
     private DirectionRepository directionRepository;
@@ -39,7 +41,8 @@ class DirectionServiceTest {
         MockitoAnnotations.initMocks(this);
         directionService = new DirectionService(
                 directionRepository,
-                pharmacySearchService);
+                pharmacySearchService,
+                kakaoCategorySearchService);
 
         pharmacyList = new ArrayList<>();
         // Adding PharmacyDto objects to the list using add method
