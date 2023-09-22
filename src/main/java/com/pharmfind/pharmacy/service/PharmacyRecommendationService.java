@@ -48,12 +48,14 @@ public class PharmacyRecommendationService {
         String param = String.join(",", direction.getTargetPharmacyName(),
                 String.valueOf(direction.getTargetLatitude()),
                 String.valueOf(direction.getTargetLongitude()));
-        UriComponentsBuilder.fromHttpUrl(DIRECTION_BASE_URL + param)
+        String directionUrl = UriComponentsBuilder.fromHttpUrl(DIRECTION_BASE_URL + param)
                 .toUriString();
+
+        log.info("direction param : {}, url : {}", param, directionUrl);
         return OutputDto.builder()
                 .pharmacyAddress(direction.getTargetAddress())
                 .pharmacyName(direction.getTargetPharmacyName())
-                .directionUrl("todo") // TODO
+                .directionUrl(directionUrl) // TODO
                 .roadViewUrl(ROAD_VIEW_BASE_URL + direction.getTargetLatitude() +
                         "," + direction.getTargetLatitude())
                 .distance(String.format("%.2f km", direction.getDistance()))

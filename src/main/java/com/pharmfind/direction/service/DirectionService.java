@@ -84,7 +84,7 @@ public class DirectionService {
                                         pharmacyDto.getDistance() * 0.001 // km 단위
                                 )
                                 .build())
-                .limit(MAX_SEARCH_COUNT)
+                .limit(10)
                 .collect(Collectors.toList());
     }
 
