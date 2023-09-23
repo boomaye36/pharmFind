@@ -1,5 +1,6 @@
 package com.pharmfind.pharmacy.service;
 
+import com.pharmfind.pharmacy.cache.PharmacyRedisTemplateService;
 import com.pharmfind.pharmacy.dto.PharmacyDto;
 import com.pharmfind.pharmacy.entity.Pharmacy;
 import com.pharmfind.pharmacy.repository.PharmacyRepository;
@@ -17,9 +18,17 @@ import java.util.stream.Collectors;
 public class PharmacySearchService {
     private final PharmacyRepositoryService pharmacyRepositoryService;
     private final PharmacyRepository pharmacyRepository;
+    private final PharmacyRedisTemplateService pharmacyRedisTemplateService;
 
+    /**
+     * 먼저 reids에서 조회하고 문제가 생기면 db조회
+     * @return
+     */
     public List<PharmacyDto> searchPharmacyDtoList(){
 
+        //redis
+        List<PharmacyDto> pharmacyDtoList = pharmacyRedisTemplateService.findAll();
+        if (!pharmacyDtoList.isEmpty()) return pharmacyDtoList;
         //db
        return pharmacyRepository.findAll()
                .stream()

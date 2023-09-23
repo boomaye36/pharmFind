@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-
 class DirectionServiceTest {
     @Mock
     private PharmacySearchService pharmacySearchService;
@@ -33,7 +32,7 @@ class DirectionServiceTest {
 
     private DirectionService directionService;
     private DirectionRepository directionRepository;
-
+    private Base62Service base62Service;
     private List<PharmacyDto> pharmacyList;
 
     @BeforeEach
@@ -41,8 +40,10 @@ class DirectionServiceTest {
         MockitoAnnotations.initMocks(this);
         directionService = new DirectionService(
                 directionRepository,
+                base62Service,
                 pharmacySearchService,
-                kakaoCategorySearchService);
+                kakaoCategorySearchService
+        );
 
         pharmacyList = new ArrayList<>();
         // Adding PharmacyDto objects to the list using add method
@@ -73,7 +74,7 @@ class DirectionServiceTest {
                 .addressName(addressName)
                 .latitude(inputLatitude)
                 .longitude(inputLongitude)
-                .build();
+                .distance(1).build();
         when(pharmacySearchService.searchPharmacyDtoList()).thenReturn(pharmacyList);
 
         List<Direction> result = directionService.buildDirectionList(documentDto);
@@ -102,7 +103,7 @@ class DirectionServiceTest {
                 .addressName(addressName)
                 .latitude(inputLatitude)
                 .longitude(inputLongitude)
-                .build();
+                .distance(3).build();
 
         // When
         when(pharmacySearchService.searchPharmacyDtoList()).thenReturn(pharmacyList);

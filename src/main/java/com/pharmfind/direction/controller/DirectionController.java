@@ -19,16 +19,8 @@ public class DirectionController {
 
     @GetMapping("/dir/{encodedId}")
     public String searchDirection(@PathVariable("encodedId") String encodedId){
-        Direction resultDirection = directionService.findById(encodedId);
-
-        String param = String.join(",", resultDirection.getTargetPharmacyName(),
-                String.valueOf(resultDirection.getTargetLatitude()),
-                String.valueOf(resultDirection.getTargetLongitude()));
-        String directionUrl = UriComponentsBuilder.fromHttpUrl(DIRECTION_BASE_URL + param)
-                .toUriString();
-
-        log.info("direction param : {}, url : {}", param, directionUrl);
-        return "redirect:" + directionUrl;
+        String result = directionService.findShortenUrlById(encodedId);
+        return "redirect:" + result;
     }
 
 }
