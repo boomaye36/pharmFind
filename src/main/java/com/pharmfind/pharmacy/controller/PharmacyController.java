@@ -1,5 +1,6 @@
 package com.pharmfind.pharmacy.controller;
 
+import com.pharmfind.direction.repository.DirectionRepository;
 import com.pharmfind.pharmacy.cache.PharmacyRedisTemplateService;
 import com.pharmfind.pharmacy.dto.PharmacyDto;
 import com.pharmfind.pharmacy.repository.PharmacyRepository;
@@ -19,16 +20,17 @@ public class PharmacyController {
     private final PharmacyRepositoryService pharmacyRepositoryService;
     private final PharmacyRedisTemplateService pharmacyRedisTemplateService;
     private final PharmacyRepository pharmacyRepository;
+    private final DirectionRepository directionRepository;
 
     @GetMapping("/redis/save")
     public String save(){
-        List<PharmacyDto> pharmacyDtoList = pharmacyRepository.findAll()
-                .stream().map(pharmacy -> PharmacyDto.builder()
-                        .id(pharmacy.getId())
-                        .pharmacyName(pharmacy.getPharmacyName())
-                        .pharmacyAddress(pharmacy.getPharmacyAddress())
-                        .latitude(pharmacy.getLatitude())
-                        .longitude(pharmacy.getLongitude())
+        List<PharmacyDto> pharmacyDtoList = directionRepository.findAll()
+                .stream().map(direction -> PharmacyDto.builder()
+                        .id(direction.getId())
+                        .pharmacyName(direction.getTargetPharmacyName())
+                        .pharmacyAddress(direction.getTargetAddress())
+                        .latitude(direction.getTargetLatitude())
+                        .longitude(direction.getTargetLongitude())
                         .build())
                 .collect(Collectors.toList());
 

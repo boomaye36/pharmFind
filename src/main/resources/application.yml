@@ -31,13 +31,15 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
 
-    redis:
+  redis:
+    hosts:
       host: localhost
       port: 6379
-    jpa:
-      hibernate:
-        ddl-auto: validate
-      show-sql: true
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
 
 pharmacy:
   recommendation:

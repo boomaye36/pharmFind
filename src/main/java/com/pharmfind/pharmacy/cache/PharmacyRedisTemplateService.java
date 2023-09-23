@@ -30,35 +30,38 @@ public class PharmacyRedisTemplateService {
         this.hashOperations = redisTemplate.opsForHash();
     }
 
-    public void save(PharmacyDto pharmacyDto){
-        if(Objects.isNull(pharmacyDto) || Objects.isNull(pharmacyDto.getId())){
+    public void save(PharmacyDto pharmacyDto) {
+        if(Objects.isNull(pharmacyDto) || Objects.isNull(pharmacyDto.getId())) {
             log.error("Required Values must not be null");
             return;
         }
 
-        try{
+        try {
             hashOperations.put(CACHE_KEY,
                     pharmacyDto.getId().toString(),
                     serializePharmacyDto(pharmacyDto));
-            log.info("[PharmacyRedisTemplateService save success] id : {}", pharmacyDto.getId());
-        }catch (Exception e){
-            log.error("[PharmacyRedisTemplateService save error] {} ", e.getMessage());
+            log.info("[PharmacyRedisTemplateService save success] id: {}", pharmacyDto.getId());
+        } catch (Exception e) {
+            log.error("[PharmacyRedisTemplateService save error] {}", e.getMessage());
         }
     }
 
-    public List<PharmacyDto> findAll(){
-        try{
+    public List<PharmacyDto> findAll() {
+
+        try {
             List<PharmacyDto> list = new ArrayList<>();
-            for (String value : hashOperations.entries(CACHE_KEY).values()){
+            for (String value : hashOperations.entries(CACHE_KEY).values()) {
                 PharmacyDto pharmacyDto = deserializePharmacyDto(value);
                 list.add(pharmacyDto);
             }
             return list;
-        }catch (Exception e){
-            log.error("[PharmacyRedisTemplateService save error] {} ", e.getMessage());
+
+        } catch (Exception e) {
+            log.error("[PharmacyRedisTemplateService findAll error]: {}", e.getMessage());
             return Collections.emptyList();
         }
     }
+
 
     private String serializePharmacyDto(PharmacyDto pharmacyDto) throws JsonProcessingException {
         return objectMapper.writeValueAsString(pharmacyDto);

@@ -84,6 +84,26 @@ public class DirectionService {
     public List<Direction> buildDirectionListByCategoryApi(DocumentDto documentDto){
 
         if (Objects.isNull(documentDto)) return Collections.emptyList();
+        List<PharmacyDto> redisList = kakaoCategorySearchService.getRedisList();
+        if(!redisList.isEmpty())  return redisList.stream().map(pharmacyDto ->
+                        Direction.builder()
+                                .inputAddress(documentDto.getAddressName())
+                                .inputLongitude(documentDto.getLongitude())
+                                .inputLatitude(documentDto.getLatitude())
+                                .targetPharmacyName(pharmacyDto.getPharmacyName())
+                                .targetAddress(pharmacyDto.getPharmacyAddress())
+                                .targetLatitude(pharmacyDto.getLatitude())
+                                .targetLongitude(pharmacyDto.getLongitude())
+                                .distance(
+                                        calculateDistance(documentDto.getLatitude(), documentDto.getLongitude(),
+                                                pharmacyDto.getLatitude(), pharmacyDto.getLongitude()
+                                        )
+                                )
+                                .build())
+                .filter(direction -> direction.getDistance() <= RADIUS_KM)
+                .sorted(Comparator.comparing(Direction::getDistance))
+                .limit(MAX_SEARCH_COUNT)
+                .collect(Collectors.toList());
         return kakaoCategorySearchService.requestPharmacyCategorySearch(documentDto.getLatitude(),
                         documentDto.getLongitude(),
                         RADIUS_KM).getDocumentDtoList()
