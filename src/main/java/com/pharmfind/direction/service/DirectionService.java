@@ -26,14 +26,21 @@ public class DirectionService {
     private final DirectionRepository directionRepository;
     private  static final int MAX_SEARCH_COUNT = 3;// 약국 최대 검색 갯수
     private  static final double RADIUS_KM = 10.0;// 반경 10 KM 이내
+    private final Base62Service base62Service;
     private final PharmacySearchService pharmacySearchService;
     private final KakaoCategorySearchService kakaoCategorySearchService;
+
 
     @Transactional
     public List<Direction> saveAll(List<Direction> directionList){
         if(CollectionUtils.isEmpty(directionList)) return Collections.emptyList();
         return directionRepository.saveAll(directionList);
 
+    }
+
+    public Direction findById(String encodedId){
+        Long decodedId = base62Service.decodeDirectionId(encodedId);
+        return directionRepository.findById(decodedId).orElse(null);
     }
     public List<Direction> buildDirectionList(DocumentDto documentDto){
         /**
@@ -84,7 +91,7 @@ public class DirectionService {
                                         pharmacyDto.getDistance() * 0.001 // km 단위
                                 )
                                 .build())
-                .limit(10)
+                .limit(MAX_SEARCH_COUNT)
                 .collect(Collectors.toList());
     }
 
